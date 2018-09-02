@@ -198,7 +198,7 @@ public class DefaultImageCodeParser extends ImageCodeParser {
 			}
 
 			if (maxBitLength == null) {
-				if (bits.getSize() >= 24) { // allowing for 65 KB of data (8 bits in a byte, times 16)
+				if (bits.getSize() >= 24) { // allowing for 64 KB of data (8 bits in a byte, times 16)
 					bits.seekTo(0);
 					maxBitLength = bits.readUInt(24);
 					bits.seekTo(bits.getSize());
