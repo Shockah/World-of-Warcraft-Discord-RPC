@@ -1,0 +1,151 @@
+version = "1.0"
+ext {
+	unicornVersion = "2.9.2"
+}
+
+repositories {
+	mavenLocal()
+	mavenCentral()
+	jcenter()
+	maven {
+		url "https://oss.sonatype.org/content/repositories/snapshots/"
+	}
+	maven {
+		url "https://oss.sonatype.org/content/repositories/releases/"
+	}
+	maven {
+		url "https://jitpack.io"
+	}
+	google()
+}
+
+buildscript {
+	repositories {
+		mavenLocal()
+		mavenCentral()
+		jcenter()
+		maven {
+			url "https://oss.sonatype.org/content/repositories/snapshots/"
+		}
+		maven {
+			url "https://oss.sonatype.org/content/repositories/releases/"
+		}
+		maven {
+			url "https://jitpack.io"
+		}
+		google()
+	}
+	dependencies {
+		classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.4'
+	}
+}
+
+apply plugin: "com.github.johnrengelman.shadow"
+apply plugin: "java"
+
+dependencies {
+	compile "com.google.code.findbugs:jsr305:3.0.2"
+	compile "org.projectlombok:lombok:1.16.20"
+	compile "com.github.Shockah.Unicorn:func:$unicornVersion"
+	compile "com.github.Shockah.Unicorn:javafx:$unicornVersion"
+	compile "com.github.Shockah.Unicorn:collection:$unicornVersion"
+}
+
+targetCompatibility = '1.8'
+sourceCompatibility = '1.8'
+
+sourceSets.main {
+	java.srcDirs = ["src"]
+	resources.srcDirs = ["assets"]
+}
+
+project.ext.mainClassName = "pl.shockah.wowdiscordrpc.WowDiscordRpc"
+project.ext.assetsDir = new File("assets")
+
+jar {
+	manifest {
+		attributes 'Main-Class': 'pl.shockah.wowdiscordrpc.WowDiscordRpc'
+	}
+}
+
+task run(dependsOn: project.tasks.classes, type: JavaExec) {
+	main = project.mainClassName
+	classpath = sourceSets.main.runtimeClasspath
+	standardInput = System.in
+	workingDir = project.assetsDir
+	ignoreExitValue = true
+
+	if (System.getProperty('DEBUG', 'false') == 'true') {
+		jvmArgs '-Xdebug', '-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005'
+		debug true
+	}
+	if (System.getProperty('PROFILE', 'false') == 'true') {
+		def properties = new Properties()
+		properties.load(project.rootProject.file("local.properties").newDataInputStream())
+		jvmArgs properties.getProperty("profiler-arg")
+	}
+}
+
+task dist(type: Jar) {
+	archiveName = "WowDiscordRpc.jar"
+	from files(sourceSets.main.output.classesDirs)
+	from files(sourceSets.main.output.resourcesDir)
+	from {configurations.compile.collect {zipTree(it)}}
+	from files(project.assetsDir)
+ 
+	manifest {
+		attributes 'Main-Class': project.mainClassName
+	}
+}
+
+void distPackr(String platform) {
+	def outputPath = new File(new File(dist.archivePath.parent, platform), "tModLoader Installer")
+	if (platform == "mac")
+		outputPath = new File(outputPath.parentFile, "${outputPath.name}.app")
+	if (outputPath.exists())
+		outputPath.deleteDir()
+
+	def java = new File(System.properties.'java.home')
+	while (true) {
+		if (java.name.contains("jdk"))
+			break
+		java = java.parentFile
+		if (java == null)
+			throw new IllegalArgumentException("Cannot find JDK")
+	}
+
+	exec {
+		executable "java"
+		args("-jar", "$projectDir/tools/packr.jar")
+		args("--platform", platform)
+		args("--executable", "WoW Discord RPC")
+		args("--classpath", dist.archivePath.absolutePath)
+		args("--removelibs", dist.archivePath.absolutePath)
+		args("--jdk", java)
+		args("--mainclass", mainClassName)
+		args("--minimizejre", "tools/minimize.json")
+		args("--output", outputPath)
+
+		if (platform == "mac") {
+			args("--bundle", "pl.shockah.wowdiscordrpc")
+			args("--icon", "$projectDir/mac-icon.icns")
+			//args("--vmargs", "XstartOnFirstThread")
+		}
+	}
+}
+
+task distWindows {
+	dependsOn dist
+	doLast {
+		distPackr("windows64")
+	}
+}
+
+task distMac {
+	dependsOn dist
+	doLast {
+		distPackr("mac")
+	}
+}
+
+dist.dependsOn project.tasks.classes

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="450.0" spacing="8.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pl.shockah.wowdiscordrpc.controller.AppController">
+   <padding>
+      <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+   </padding>
+   <children>
+      <TitledPane fx:id="installPane" animated="false" collapsible="false" disable="true" text="Install">
+         <content>
+            <VBox spacing="8.0">
+               <children>
+                  <HBox spacing="8.0">
+                     <children>
+                        <TextField fx:id="pathTextField" HBox.hgrow="ALWAYS" />
+                        <Button fx:id="browseButton" mnemonicParsing="false" onAction="#onBrowseAction" text="Browse" />
+                     </children>
+                  </HBox>
+                  <HBox spacing="8.0">
+                     <children>
+                        <ComboBox fx:id="versionComboBox" maxWidth="1.7976931348623157E308" HBox.hgrow="SOMETIMES" />
+                        <Button fx:id="installButton" mnemonicParsing="false" onAction="#onInstallAction" text="Install" HBox.hgrow="ALWAYS" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </content>
+      </TitledPane>
+      <TitledPane fx:id="charactersPane" collapsible="false" disable="true" text="Characters">
+         <content>
+            <HBox alignment="CENTER_LEFT" spacing="4.0">
+               <children>
+                  <TitledPane collapsible="false" text="Vanilla" HBox.hgrow="ALWAYS">
+                     <content>
+                        <ListView fx:id="vanillaCharactersList" prefHeight="150.0" prefWidth="100.0" />
+                     </content>
+                  </TitledPane>
+                  <Button fx:id="copyCharacterButton" mnemonicParsing="false" text="Copy ▶" HBox.hgrow="NEVER">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </Button>
+                  <TitledPane collapsible="false" text="tModLoader" HBox.hgrow="ALWAYS">
+                     <content>
+                        <ListView fx:id="moddedCharactersList" prefHeight="150.0" prefWidth="100.0" />
+                     </content>
+                  </TitledPane>
+               </children>
+            </HBox>
+         </content>
+      </TitledPane>
+      <TitledPane fx:id="worldsPane" collapsible="false" disable="true" text="Worlds">
+         <content>
+            <HBox alignment="CENTER_LEFT" spacing="4.0">
+               <children>
+                  <TitledPane collapsible="false" text="Vanilla" HBox.hgrow="ALWAYS">
+                     <content>
+                        <ListView fx:id="vanillaWorldsList" prefHeight="150.0" prefWidth="100.0" />
+                     </content>
+                  </TitledPane>
+                  <Button fx:id="copyWorldButton" mnemonicParsing="false" text="Copy ▶" HBox.hgrow="NEVER">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </Button>
+                  <TitledPane collapsible="false" text="tModLoader" HBox.hgrow="ALWAYS">
+                     <content>
+                        <ListView fx:id="moddedWorldsList" prefHeight="150.0" prefWidth="100.0" />
+                     </content>
+                  </TitledPane>
+               </children>
+            </HBox>
+         </content>
+      </TitledPane>
+      <ProgressBar fx:id="progressBar" maxWidth="1.7976931348623157E308" progress="0.0" />
+   </children>
+</VBox>
