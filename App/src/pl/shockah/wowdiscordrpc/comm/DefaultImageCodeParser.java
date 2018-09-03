@@ -163,7 +163,11 @@ public class DefaultImageCodeParser extends ImageCodeParser {
 		if (y2 - y1 - 1 < 1)
 			return null;
 
-		// TODO: confirm right and bottom side are same lengths or even there
+		for (int y = y2; y > y1; y--) {
+			for (int x = x2; x > x1; x--) {
+				// TODO: validate code rectangle
+			}
+		}
 
 		return new Rectangle(x1, y1, x2 - x1 + 1, y2 - y1 + 1);
 	}
