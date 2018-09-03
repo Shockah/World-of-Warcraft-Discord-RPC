@@ -35,8 +35,8 @@ public class BitBuffer {
 	}
 
 	private void ensureWriteCapacity(int bits) {
-		int newSize = size;
-		while (buffer.length * 8 - position < bits) {
+		int newSize = buffer.length * 8;
+		while (newSize - position < bits) {
 			newSize *= 4;
 		}
 		if (buffer.length * 8 != newSize)
