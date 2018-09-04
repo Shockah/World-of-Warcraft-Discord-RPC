@@ -1,4 +1,4 @@
-package pl.shockah.wowdiscordrpc;
+package pl.shockah.wowdiscordrpc.bin;
 
 import java.util.Arrays;
 
@@ -53,8 +53,13 @@ public class BitBuffer {
 		seekTo(position + offset);
 	}
 
+	public int getAvailable() {
+		return size - position;
+	}
+
 	public void clear() {
 		size = 0;
+		position = 0;
 	}
 
 	private boolean readInternal() {
