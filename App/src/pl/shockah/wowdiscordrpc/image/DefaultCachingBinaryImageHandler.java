@@ -1,5 +1,10 @@
 package pl.shockah.wowdiscordrpc.image;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -7,7 +12,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
-import javafx.scene.shape.Rectangle;
+import lombok.EqualsAndHashCode;
 import pl.shockah.unicorn.collection.MutableArray2D;
 import pl.shockah.wowdiscordrpc.bin.BitBuffer;
 
@@ -83,9 +88,42 @@ public class DefaultCachingBinaryImageHandler implements BinaryImageHandler {
 		None, Data, Frame
 	}
 
+	@EqualsAndHashCode
+	private final class Point {
+		public final int x;
+
+		public final int y;
+
+		private Point(int x, int y) {
+			this.x = x;
+			this.y = y;
+		}
+	}
+
+	@EqualsAndHashCode
+	private final class Rectangle {
+		@Nonnull
+		public final Point point;
+
+		public final int width;
+
+		public final int height;
+
+		@EqualsAndHashCode.Exclude
+		public final int area;
+
+		private Rectangle(@Nonnull Point point, int width, int height) {
+			this.point = point;
+			this.width = width;
+			this.height = height;
+			area = width * height;
+		}
+	}
+
 	@Nonnull
 	@Override
 	public Image extract(@Nonnull Image fullImage) {
+		List<Point> framePoints = new ArrayList<>();
 		MutableArray2D<PixelType> pixelTypes = new MutableArray2D<>((int)fullImage.getWidth(), (int)fullImage.getHeight(), PixelType.None);
 		PixelReader pixelReader = fullImage.getPixelReader();
 		int imageWidth = (int)fullImage.getWidth();
@@ -96,6 +134,7 @@ public class DefaultCachingBinaryImageHandler implements BinaryImageHandler {
 				int argb = pixelReader.getArgb(x, y);
 				if (argb == minArgb || argb == maxArgb) {
 					pixelTypes.set(x, y, PixelType.Frame);
+					framePoints.add(new Point(x, y));
 					continue;
 				}
 
@@ -115,9 +154,39 @@ public class DefaultCachingBinaryImageHandler implements BinaryImageHandler {
 			}
 		}
 
-		// TODO: find a rectangular frame and return that subimage
+		Set<Rectangle> rectangles = new HashSet<>();
 
-		return null;
+		for (Point framePoint : framePoints) {
+			if (framePoint.x >= imageWidth - 3)
+				continue;
+			if (framePoint.y >= imageWidth - 3)
+				continue;
+
+			for (int x2 = framePoint.x + 2; x2 < imageWidth; x2++) {
+				OuterY:
+				for (int y2 = framePoint.y + 2; y2 < imageHeight; y2++) {
+					for (int yy = framePoint.y + 1; yy < y2; yy++) {
+						for (int xx = framePoint.x + 1; xx < x2; xx++) {
+							if (pixelTypes.get(xx, yy) == PixelType.None)
+								continue OuterY;
+						}
+					}
+
+					rectangles.add(new Rectangle(framePoint, x2 - framePoint.x + 1, y2 - framePoint.y + 1));
+				}
+			}
+		}
+
+		if (rectangles.isEmpty())
+			throw new IllegalArgumentException();
+
+		Rectangle maxAreaRectangle = null;
+		for (Rectangle rectangle : rectangles) {
+			if (maxAreaRectangle == null || rectangle.area > maxAreaRectangle.area)
+				maxAreaRectangle = rectangle;
+		}
+
+		return new WritableImage(pixelReader, maxAreaRectangle.point.x, maxAreaRectangle.point.y, maxAreaRectangle.width, maxAreaRectangle.height);
 	}
 
 	@Nonnull
