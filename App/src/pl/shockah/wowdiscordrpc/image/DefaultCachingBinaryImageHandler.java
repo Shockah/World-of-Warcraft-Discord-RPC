@@ -8,6 +8,7 @@ import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.shape.Rectangle;
+import pl.shockah.unicorn.collection.MutableArray2D;
 import pl.shockah.wowdiscordrpc.bin.BitBuffer;
 
 public class DefaultCachingBinaryImageHandler implements BinaryImageHandler {
@@ -29,6 +30,10 @@ public class DefaultCachingBinaryImageHandler implements BinaryImageHandler {
 
 	public final int maxBlue;
 
+	public final int minArgb;
+
+	public final int maxArgb;
+
 	@Nullable
 	private Rectangle cachedRectangle;
 
@@ -42,6 +47,20 @@ public class DefaultCachingBinaryImageHandler implements BinaryImageHandler {
 		maxRed = minRed + (1 << redBits) - 1;
 		maxGreen = minGreen + (1 << greenBits) - 1;
 		maxBlue = minBlue + (1 << blueBits) - 1;
+		minArgb = getArgb(minRed, minGreen, minBlue);
+
+		int maxArgbR = minRed;
+		int maxArgbG = minGreen;
+		int maxArgbB = minBlue;
+
+		if (redBits > 0)
+			maxArgbR += 1 << (redBits - 1);
+		if (greenBits > 0)
+			maxArgbG += 1 << (greenBits - 1);
+		if (blueBits > 0)
+			maxArgbB += 1 << (blueBits - 1);
+
+		maxArgb = getArgb(maxArgbR, maxArgbG, maxArgbB);
 	}
 
 	private int getRed(int argb) {
@@ -60,10 +79,44 @@ public class DefaultCachingBinaryImageHandler implements BinaryImageHandler {
 		return ((red & 0x0ff) << 16) | ((green & 0x0ff) << 8) | (blue & 0x0ff);
 	}
 
+	private enum PixelType {
+		None, Data, Frame
+	}
+
 	@Nonnull
 	@Override
 	public Image extract(@Nonnull Image fullImage) {
-		// TODO: extract a code image out of a full screen image
+		MutableArray2D<PixelType> pixelTypes = new MutableArray2D<>((int)fullImage.getWidth(), (int)fullImage.getHeight(), PixelType.None);
+		PixelReader pixelReader = fullImage.getPixelReader();
+		int imageWidth = (int)fullImage.getWidth();
+		int imageHeight = (int)fullImage.getHeight();
+
+		for (int y = 0; y < imageHeight; y++) {
+			for (int x = 0; x < imageWidth; x++) {
+				int argb = pixelReader.getArgb(x, y);
+				if (argb == minArgb || argb == maxArgb) {
+					pixelTypes.set(x, y, PixelType.Frame);
+					continue;
+				}
+
+				int r = getRed(argb);
+				if (r < minRed || r > maxRed)
+					continue;
+
+				int g = getGreen(argb);
+				if (g < minGreen || g > maxGreen)
+					continue;
+
+				int b = getBlue(argb);
+				if (b < minBlue || r > maxBlue)
+					continue;
+
+				pixelTypes.set(x, y, PixelType.Data);
+			}
+		}
+
+		// TODO: find a rectangular frame and return that subimage
+
 		return null;
 	}
 
@@ -103,7 +156,7 @@ public class DefaultCachingBinaryImageHandler implements BinaryImageHandler {
 					bits.seekTo(bits.getSize());
 				}
 			}
-			
+
 			if (maxBitLength != null) {
 				if (bits.getSize() >= maxBitLength) {
 					if (bits.getSize() > maxBitLength) {
@@ -164,9 +217,7 @@ public class DefaultCachingBinaryImageHandler implements BinaryImageHandler {
 	}
 
 	private void drawBorderPixel(@Nonnull PixelWriter pixelWriter, int x, int y) {
-		int argb = (x + y) % 2 == 0
-				? getArgb(minRed, minGreen, minBlue)
-				: getArgb(minRed + (1 << (redBits - 1)), minGreen + (1 << (greenBits - 1)), minBlue + (1 << (blueBits - 1)));
+		int argb = (x + y) % 2 == 0 ? minArgb : maxArgb;
 		pixelWriter.setArgb(x, y, argb);
 	}
 }
