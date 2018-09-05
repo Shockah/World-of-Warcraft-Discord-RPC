@@ -1,5 +1,6 @@
 package pl.shockah.wowdiscordrpc.bin;
 
+import java.nio.charset.Charset;
 import java.util.Arrays;
 
 import javax.annotation.Nonnull;
@@ -102,6 +103,23 @@ public class BitBuffer {
 		ensureWriteCapacity(bits);
 		for (int i = 0; i < bits; i++) {
 			writeInternal(((value >> i) & 1) != 0);
+		}
+	}
+
+	@Nonnull
+	public String readString(int lengthBits, @Nonnull Charset charset) {
+		byte[] bytes = new byte[readUInt(lengthBits)];
+		for (int i = 0; i < bytes.length; i++) {
+			bytes[i] = (byte)readUInt(8);
+		}
+		return new String(bytes, charset);
+	}
+
+	public void writeString(int lengthBits, @Nonnull String value, @Nonnull Charset charset) {
+		byte[] bytes = value.getBytes(charset);
+		writeUInt(lengthBits, bytes.length);
+		for (byte b : bytes) {
+			writeUInt(8, b);
 		}
 	}
 }
