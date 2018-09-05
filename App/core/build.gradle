@@ -1,0 +1,14 @@
+dependencies {
+	compile "com.google.code.findbugs:jsr305:3.0.2"
+	compile "org.projectlombok:lombok:1.18.2"
+	compile "com.github.Shockah.Unicorn:func:$unicornVersion"
+	compile "com.github.Shockah.Unicorn:collection:$unicornVersion"
+}
+
+targetCompatibility = '1.8'
+sourceCompatibility = '1.8'
+
+sourceSets.main {
+	java.srcDirs = ["src"]
+	resources.srcDirs = ["assets"]
+}
