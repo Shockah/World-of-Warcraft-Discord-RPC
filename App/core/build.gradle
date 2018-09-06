@@ -3,12 +3,25 @@ dependencies {
 	compile "org.projectlombok:lombok:1.18.2"
 	compile "com.github.Shockah.Unicorn:func:$unicornVersion"
 	compile "com.github.Shockah.Unicorn:collection:$unicornVersion"
+
+	testImplementation "org.junit.jupiter:junit-jupiter-api:5.1.0"
+	testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.1.0"
 }
 
 targetCompatibility = '1.8'
 sourceCompatibility = '1.8'
 
-sourceSets.main {
-	java.srcDirs = ["src"]
-	resources.srcDirs = ["assets"]
+sourceSets {
+	main {
+		java.srcDirs = ["src"]
+		resources.srcDirs = ["assets"]
+	}
+	test {
+		java.srcDirs = ["test"]
+	}
+}
+
+test {
+	useJUnitPlatform()
+	testClassesDirs = sourceSets.test.output
 }

@@ -15,14 +15,14 @@ public class BitBuffer {
 	private int size;
 
 	@Getter
-	private int position;
+	private int position = 0;
 
 	public BitBuffer() {
 		this(1024);
 	}
 
 	public BitBuffer(int initialCapacity) {
-		this(new byte[(int)Math.ceil(initialCapacity / 8.0)], initialCapacity);
+		this(new byte[(int)Math.ceil(initialCapacity / 8.0)], 0);
 	}
 
 	public BitBuffer(@Nonnull byte[] buffer, int size) {
@@ -66,6 +66,7 @@ public class BitBuffer {
 	private boolean readInternal() {
 		int byteIndex = position / 8;
 		int bitIndex = position % 8;
+		position++;
 		return ((buffer[byteIndex] >> bitIndex) & 1) != 0;
 	}
 
@@ -77,6 +78,7 @@ public class BitBuffer {
 		else
 			buffer[byteIndex] &= ~(1 << bitIndex);
 		position++;
+		size = Math.max(position, size);
 	}
 
 	public boolean read() {
