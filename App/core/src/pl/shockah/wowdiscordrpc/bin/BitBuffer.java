@@ -9,6 +9,9 @@ import lombok.Getter;
 
 public class BitBuffer {
 	@Nonnull
+	private static final Charset utf8 = Charset.forName("UTF-8");
+
+	@Nonnull
 	private byte[] buffer;
 
 	@Getter
@@ -109,12 +112,21 @@ public class BitBuffer {
 	}
 
 	@Nonnull
+	public String readString(int lengthBits) {
+		return readString(lengthBits, utf8);
+	}
+
+	@Nonnull
 	public String readString(int lengthBits, @Nonnull Charset charset) {
 		byte[] bytes = new byte[readUInt(lengthBits)];
 		for (int i = 0; i < bytes.length; i++) {
 			bytes[i] = (byte)readUInt(8);
 		}
 		return new String(bytes, charset);
+	}
+
+	public void writeString(int lengthBits, @Nonnull String value) {
+		writeString(lengthBits, value, utf8);
 	}
 
 	public void writeString(int lengthBits, @Nonnull String value, @Nonnull Charset charset) {
