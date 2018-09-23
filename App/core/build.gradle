@@ -18,8 +18,11 @@ sourceSets {
 	}
 	test {
 		java.srcDirs = ["test"]
+		resources.srcDirs = ["testAssets"]
 	}
 }
+
+compileTestJava.options.encoding = 'UTF-8'
 
 test {
 	useJUnitPlatform()

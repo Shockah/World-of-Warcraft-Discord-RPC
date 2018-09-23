@@ -17,7 +17,7 @@ import pl.shockah.unicorn.collection.MutableBooleanArray2D;
 import pl.shockah.wowdiscordrpc.bin.BitBuffer;
 
 public class DefaultBinaryImageHandler implements BinaryImageHandler {
-	private static final int cornerSize = 7;
+	private static final int cornerSize = 6;
 
 	@Nonnull
 	private static final int[][] cornerXYs = new int[][] {
@@ -63,15 +63,12 @@ public class DefaultBinaryImageHandler implements BinaryImageHandler {
 			corner.set(0, i, true);
 			corner.set(cornerSize - 1, i, true);
 		}
-		for (int y = 0; y < cornerSize - 4; y++) {
-			for (int x = 0; x < cornerSize - 4; x++) {
-				corner.set(x + 2, y + 2, true);
+		for (int y = 1; y < cornerSize - 1; y++) {
+			for (int x = 1; x < cornerSize - 1; x++) {
+				if ((x + y) % 2 != 0)
+					corner.set(x, y, true);
 			}
 		}
-		corner.set(1, 1, true);
-		corner.set(1, cornerSize - 2, true);
-		corner.set(cornerSize - 2, 1, true);
-		corner.set(cornerSize - 2, cornerSize - 2, true);
 	}
 
 	public DefaultBinaryImageHandler() {

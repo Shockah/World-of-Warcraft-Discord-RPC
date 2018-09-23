@@ -6,14 +6,19 @@ import java.nio.charset.Charset;
 
 import javax.annotation.Nonnull;
 
+import javafx.application.Application;
 import javafx.scene.image.Image;
+import javafx.scene.image.WritableImage;
+import javafx.stage.Stage;
 import pl.shockah.wowdiscordrpc.image.BinaryImageHandler;
 import pl.shockah.wowdiscordrpc.image.DefaultBinaryImageHandler;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class BinaryImageTests {
+public class BinaryImageTests extends Application {
+	private static volatile Runnable javafxRunnable;
+
 	@Nonnull
 	private static final String cupcakeIpsum = "Sugar plum chocolate cake candy cake sweet roll marshmallow tiramisu danish. Topping chocolate cake candy. Gummies sesame snaps sweet roll. Pie topping tootsie roll candy cake sugar plum. Cookie soufflé wafer dragée cotton candy jelly beans jelly beans cookie tootsie roll. Caramels toffee caramels dessert jelly-o toffee. Muffin pie toffee. Wafer gummies cake dragée marshmallow marshmallow marshmallow biscuit. Bear claw caramels brownie fruitcake cake jelly-o tootsie roll. Cake pastry tootsie roll cake dessert chocolate cake. Pastry jujubes pie bear claw cupcake caramels ice cream. Lollipop jujubes oat cake.\n" +
 			"\n" +
@@ -108,7 +113,7 @@ public class BinaryImageTests {
 
 		buffer.seekTo(0);
 		Image image = handler.write(buffer);
-		assertEquals(14 * 14, image.getWidth() * image.getHeight());
+		assertEquals(12 * 12, image.getWidth() * image.getHeight());
 
 		buffer = handler.read(image);
 		assertEquals(1, buffer.getSize());
@@ -126,7 +131,7 @@ public class BinaryImageTests {
 
 		buffer.seekTo(0);
 		Image image = handler.write(buffer);
-		assertEquals(14 * 14, image.getWidth() * image.getHeight());
+		assertEquals(12 * 12, image.getWidth() * image.getHeight());
 
 		buffer = handler.read(image);
 		assertEquals(32 + 14 + 18, buffer.getSize());
@@ -145,7 +150,7 @@ public class BinaryImageTests {
 
 		buffer.seekTo(0);
 		Image image = handler.write(buffer);
-		assertEquals(51 * 51, image.getWidth() * image.getHeight());
+		assertEquals(45 * 45, image.getWidth() * image.getHeight());
 
 		buffer = handler.read(image);
 		assertEquals(cupcakeIpsum, buffer.readString(16, Charset.forName("UTF-8")));
@@ -162,7 +167,7 @@ public class BinaryImageTests {
 
 		buffer.seekTo(0);
 		Image image = handler.write(buffer);
-		assertEquals(62 * 62, image.getWidth() * image.getHeight());
+		assertEquals(54 * 54, image.getWidth() * image.getHeight());
 
 		buffer = handler.read(image);
 		assertEquals(cupcakeIpsum, buffer.readString(16, Charset.forName("UTF-8")));
@@ -179,10 +184,40 @@ public class BinaryImageTests {
 
 		buffer.seekTo(0);
 		Image image = handler.write(buffer);
-		assertEquals(86 * 86, image.getWidth() * image.getHeight());
+		assertEquals(76 * 76, image.getWidth() * image.getHeight());
 
 		buffer = handler.read(image);
 		assertEquals(cupcakeIpsum, buffer.readString(16, Charset.forName("UTF-8")));
 		assertEquals(iNeedU, buffer.readString(16, Charset.forName("UTF-8")));
+	}
+
+	@Test
+	void imageExtractTest() {
+		javafxRunnable = () -> {
+			Image placeholder = new Image("400x300-placeholder.jpg");
+			System.err.println(placeholder.isError());
+
+			BitBuffer buffer = new BitBuffer();
+			buffer.writeString(16, cupcakeIpsum, Charset.forName("UTF-8"));
+
+			buffer.seekTo(0);
+			BinaryImageHandler handler = new DefaultBinaryImageHandler();
+			Image dataImage = handler.write(buffer);
+
+			WritableImage tempImage = new WritableImage(placeholder.getPixelReader(), (int)placeholder.getWidth(), (int)placeholder.getHeight());
+			tempImage.getPixelWriter().setPixels(32, 32, (int)dataImage.getWidth(), (int)dataImage.getHeight(), dataImage.getPixelReader(), 0, 0);
+
+			dataImage = handler.extract(tempImage);
+			buffer = handler.read(dataImage);
+			assertEquals(cupcakeIpsum, buffer.readString(16, Charset.forName("UTF-8")));
+		};
+		launch();
+	}
+
+	@Override
+	public void start(Stage primaryStage) {
+		primaryStage.show();
+		javafxRunnable.run();
+		primaryStage.close();
 	}
 }
