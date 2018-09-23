@@ -1,0 +1,13 @@
+## Interface: 80000
+## Title: WoW Discord RPC
+## Notes: World of Warcraft Discord RPC client in the form of a WoW addon with a companion app (addon part).
+## Version: r1
+## Author: Shockah-Ghostlands-EU
+
+# Libs
+embeds.xml
+Libs/ShockahUtils.lua
+
+# Addon code
+Core.lua
+BitBuffer.lua
