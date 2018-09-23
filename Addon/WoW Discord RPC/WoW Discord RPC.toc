@@ -11,3 +11,9 @@ Libs/ShockahUtils.lua
 # Addon code
 Core.lua
 BitBuffer.lua
+Array2D.lua
+PixelRenderer.lua
+
+MessageSerializer.lua
+CharacterSerializer.lua
+ActivitySerializer.lua
