@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 
 import pl.shockah.wowdiscordrpc.bin.BitBuffer;
 import pl.shockah.wowdiscordrpc.comm.CharacterRole;
+import pl.shockah.wowdiscordrpc.comm.activity.dungeon.Dungeon;
 
 public class RaidActivitySerializer {
 	@Nonnull
@@ -15,6 +16,8 @@ public class RaidActivitySerializer {
 
 		if (bits.read())
 			activity.difficulty = RaidDifficulty.values()[bits.readUInt(2)];
+		if (bits.read())
+			activity.raid = Raid.getRaid(bits.readString(4));
 		if (bits.read())
 			activity.composition = readComposition(bits);
 		if (bits.read())

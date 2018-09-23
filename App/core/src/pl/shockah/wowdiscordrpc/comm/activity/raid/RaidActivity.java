@@ -13,8 +13,20 @@ public class RaidActivity extends Activity {
 	public RaidDifficulty difficulty;
 
 	@Nullable
+	public Raid raid;
+
+	@Nullable
 	public RaidComposition composition;
 
 	@Nullable
 	public RaidEncounter encounter;
+
+	@Nullable
+	@Override
+	public String getRpcImageKey() {
+		if (raid != null)
+			return raid.rpcImageKey;
+		else
+			return super.getRpcImageKey();
+	}
 }
