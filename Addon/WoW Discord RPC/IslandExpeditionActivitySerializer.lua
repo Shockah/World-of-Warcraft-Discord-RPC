@@ -6,11 +6,11 @@ local Class = {}
 Addon.IslandExpeditionActivitySerializer = Class
 
 local function GetMappedDifficulty(difficultyID)
-	if difficultyID == 1 or difficultyID == 12 then -- Normal -- TODO: confirm
+	if difficultyID == 38 then -- Normal -- TODO: confirm
 		return 0
-	elseif difficultyID == 2 or difficultyID == 11 then -- Heroic -- TODO: confirm
+	elseif difficultyID == 39 then -- Heroic -- TODO: confirm
 		return 1
-	elseif difficultyID == 23 then -- Mythic -- TODO: confirm
+	elseif difficultyID == 40 then -- Mythic
 		return 2
 	elseif difficultyID == 29 then -- PVP -- TODO: confirm
 		return 3
