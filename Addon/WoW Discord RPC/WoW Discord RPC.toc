@@ -17,3 +17,11 @@ PixelRenderer.lua
 MessageSerializer.lua
 CharacterSerializer.lua
 ActivitySerializer.lua
+
+DungeonActivitySerializer.lua
+RaidActivitySerializer.lua
+
+Dungeon.lua
+Raid.lua
+
+ChallengeModeTracker.lua

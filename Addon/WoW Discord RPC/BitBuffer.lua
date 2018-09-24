@@ -69,6 +69,7 @@ function Instance:ReadUInt(bits)
 end
 
 function Instance:WriteUInt(bits, value)
+	value = math.ceil(value)
 	for i in 1, bits do
 		self:Write(bit.band(bit.rshift(value, i - 1), 1) ~= 0)
 	end

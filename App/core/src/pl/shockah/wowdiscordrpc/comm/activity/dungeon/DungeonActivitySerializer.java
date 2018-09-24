@@ -26,8 +26,10 @@ public class DungeonActivitySerializer {
 				return DungeonDifficulty.heroic;
 			case 2:
 				return DungeonDifficulty.mythic;
+			case 3:
+				return DungeonDifficulty.timewalking;
 			default:
-				return DungeonDifficulty.getMythicPlus(difficultyNumber - 1);
+				return DungeonDifficulty.getMythicPlus(difficultyNumber - 2);
 		}
 	}
 }

@@ -8,52 +8,52 @@ import static pl.shockah.wowdiscordrpc.comm.CharacterClass.*;
 import static pl.shockah.wowdiscordrpc.comm.CharacterRole.*;
 
 public enum CharacterSpecialization {
-	Arms("Arms", Warrior, MeleeDPS),
-	Fury("Fury", Warrior, MeleeDPS),
+	Arms("Arms", Warrior, DPS),
+	Fury("Fury", Warrior, DPS),
 	ProtectionWarrior("Protection", Warrior, Tank),
 
 	Blood("Blood", DeathKnight, Tank),
-	FrostDeathKnight("Frost", DeathKnight, MeleeDPS),
-	Unholy("Unholy", DeathKnight, RangedDPS),
+	FrostDeathKnight("Frost", DeathKnight, DPS),
+	Unholy("Unholy", DeathKnight, DPS),
 
 	HolyPaladin("Holy", Paladin, Healer),
 	ProtectionPaladin("Protection", Paladin, Tank),
-	Retribution("Retribution", Paladin, MeleeDPS),
+	Retribution("Retribution", Paladin, DPS),
 
 	Brewmaster("Brewmaster", Monk, Tank),
 	Mistweaver("Mistweaver", Monk, Healer),
-	Windwalker("Windwalker", Monk, MeleeDPS),
+	Windwalker("Windwalker", Monk, DPS),
 
 	Discipline("Discipline", Priest, Healer),
 	HolyPriest("Holy", Priest, Healer),
-	Shadow("Shadow", Priest, RangedDPS),
+	Shadow("Shadow", Priest, DPS),
 
-	Elemental("Elemental", Shaman, RangedDPS),
-	Enhancement("Enhancement", Shaman, MeleeDPS),
+	Elemental("Elemental", Shaman, DPS),
+	Enhancement("Enhancement", Shaman, DPS),
 	RestorationShaman("Restoration", Shaman, Healer),
 
-	Balance("Balance", Druid, RangedDPS),
-	Feral("Feral", Druid, MeleeDPS),
+	Balance("Balance", Druid, DPS),
+	Feral("Feral", Druid, DPS),
 	Guardian("Guardian", Druid, Tank),
 	RestorationDruid("Restoration", Druid, Healer),
 
-	Assassination("Assassination", Rogue, MeleeDPS),
-	Outlaw("Outlaw", Rogue, MeleeDPS),
-	Subtlety("Subtlety", Rogue, MeleeDPS),
+	Assassination("Assassination", Rogue, DPS),
+	Outlaw("Outlaw", Rogue, DPS),
+	Subtlety("Subtlety", Rogue, DPS),
 
-	Arcane("Arcane", Mage, RangedDPS),
-	Fire("Fire", Mage, RangedDPS),
-	FrostMage("Frost", Mage, RangedDPS),
+	Arcane("Arcane", Mage, DPS),
+	Fire("Fire", Mage, DPS),
+	FrostMage("Frost", Mage, DPS),
 
-	Affliction("Affliction", Warlock, RangedDPS),
-	Demonology("Demonology", Warlock, RangedDPS),
-	Destruction("Destruction", Warlock, RangedDPS),
+	Affliction("Affliction", Warlock, DPS),
+	Demonology("Demonology", Warlock, DPS),
+	Destruction("Destruction", Warlock, DPS),
 
-	BeastMastery("Beast Mastery", Hunter, RangedDPS),
-	Marksmanship("Marksmanship", Hunter, RangedDPS),
-	Survival("Survival", Hunter, MeleeDPS),
+	BeastMastery("Beast Mastery", Hunter, DPS),
+	Marksmanship("Marksmanship", Hunter, DPS),
+	Survival("Survival", Hunter, DPS),
 
-	Havoc("Havoc", DemonHunter, MeleeDPS),
+	Havoc("Havoc", DemonHunter, DPS),
 	Vengeance("Vengeance", DemonHunter, Tank);
 
 	@Nonnull

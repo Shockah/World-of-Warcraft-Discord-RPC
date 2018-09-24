@@ -16,6 +16,9 @@ public class DungeonDifficulty {
 	public static final DungeonDifficulty mythic = new DungeonDifficulty("Mythic");
 
 	@Nonnull
+	public static final DungeonDifficulty timewalking = new DungeonDifficulty("Timewalking");
+
+	@Nonnull
 	private static final Map<Integer, DungeonDifficulty> mythicPlusCache = new HashMap<>();
 
 	@Nonnull

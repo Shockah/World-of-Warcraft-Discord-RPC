@@ -11,12 +11,11 @@ public class IslandExpeditionActivitySerializer {
 
 		if (bits.read())
 			activity.difficulty = IslandExpeditionDifficulty.values()[bits.readUInt(2)];
-		if (bits.read())
+		if (bits.read()) {
 			activity.playerProgress = bits.readUInt(15);
-		if (bits.read())
 			activity.enemyProgress = bits.readUInt(15);
-		if (bits.read())
 			activity.maxProgress = bits.readUInt(15);
+		}
 
 		return activity;
 	}
