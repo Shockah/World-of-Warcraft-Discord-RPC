@@ -36,16 +36,19 @@ function Class:Serialize(bits)
 	end
 
 	if self:IncludeProgress() then
-		bits:Write(true)
-
 		local alliance, horde, target = GetProgress()
-		local isAlliance = UnitFactionGroup("player") == "Alliance"
-		local playerProgress = isAlliance and alliance or horde
-		local enemyProgress = isAlliance and horde or alliance
+		if alliance then
+			local isAlliance = UnitFactionGroup("player") == "Alliance"
+			local playerProgress = isAlliance and alliance or horde
+			local enemyProgress = isAlliance and horde or alliance
 
-		bits:WriteUInt(15, playerProgress)
-		bits:WriteUInt(15, enemyProgress)
-		bits:WriteUInt(15, target)
+			bits:Write(true)
+			bits:WriteUInt(15, playerProgress)
+			bits:WriteUInt(15, enemyProgress)
+			bits:WriteUInt(15, target)
+		else
+			bits:Write(false)
+		end
 	else
 		bits:Write(false)
 	end
