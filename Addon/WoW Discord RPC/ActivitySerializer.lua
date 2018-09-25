@@ -12,6 +12,8 @@ function Class:Serialize(bits)
 		Addon.DungeonActivitySerializer:Serialize(bits)
 	elseif instanceType == "raid" then
 		Addon.RaidActivitySerializer:Serialize(bits)
+	elseif instanceType == "scenario" and (difficultyID == 38 or difficultyID == 39 or difficultyID == 40) then -- TODO: include PVP difficulty
+		Addon.IslandExpeditionActivitySerializer:Serialize(bits)
 	else
 		error("Unknown activity.")
 	end

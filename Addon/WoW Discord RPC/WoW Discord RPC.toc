@@ -20,6 +20,7 @@ ActivitySerializer.lua
 
 DungeonActivitySerializer.lua
 RaidActivitySerializer.lua
+IslandExpeditionActivitySerializer.lua
 
 Dungeon.lua
 Raid.lua

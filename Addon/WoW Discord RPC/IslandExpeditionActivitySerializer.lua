@@ -18,6 +18,13 @@ local function GetMappedDifficulty(difficultyID)
 	error("Unknown island expedition difficulty.")
 end
 
+local function GetProgress()
+	for widgetID, widgetFrame in UIWidgetManager:EnumerateWidgetsByWidgetTag("azeriteBar") do
+		return widgetFrame.LeftBar:GetValue(), widgetFrame.RightBar:GetValue(), select(2, widgetFrame.LeftBar:GetMinMaxValues())
+	end
+	return nil
+end
+
 function Class:Serialize(bits)
 	local name, instanceType, difficultyID, difficultyName, maxPlayers, dynamicDifficulty, isDynamic, instanceMapID, instanceGroupSize = GetInstanceInfo()
 
@@ -30,9 +37,15 @@ function Class:Serialize(bits)
 
 	if self:IncludeProgress() then
 		bits:Write(true)
-		bits:WriteUInt(15, 0) -- TODO: actual player progress
-		bits:WriteUInt(15, 0) -- TODO: actual enemy progress
-		bits:WriteUInt(15, 12000) -- TODO: actual max progress
+
+		local alliance, horde, target = GetProgress()
+		local isAlliance = UnitFactionGroup("player") == "Alliance"
+		local playerProgress = isAlliance and alliance or horde
+		local enemyProgress = isAlliance and horde or alliance
+
+		bits:WriteUInt(15, playerProgress)
+		bits:WriteUInt(15, enemyProgress)
+		bits:WriteUInt(15, target)
 	else
 		bits:Write(false)
 	end
