@@ -87,6 +87,13 @@ function Class:Serialize(bits)
 		bits:Write(false)
 	end
 
+	if self:IncludeRegion() then
+		bits:Write(true)
+		bits:WriteUInt(3, GetCurrentRegion() - 1)
+	else
+		bits:Write(false)
+	end
+
 	if self:IncludeFaction() then
 		bits:Write(true)
 		bits:WriteUInt(2, S:KeyOf(factionsEnum, UnitFactionGroup("player")) - 1)
@@ -116,6 +123,10 @@ function Class:IncludeName()
 end
 
 function Class:IncludeRealm()
+	return true
+end
+
+function Class:IncludeRegion()
 	return true
 end
 

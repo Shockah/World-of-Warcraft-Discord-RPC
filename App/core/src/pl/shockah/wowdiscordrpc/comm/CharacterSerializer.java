@@ -14,6 +14,8 @@ public class CharacterSerializer {
 		if (bits.read())
 			character.realm = bits.readString(6);
 		if (bits.read())
+			character.region = Region.values()[bits.readUInt(3)];
+		if (bits.read())
 			character.faction = CharacterFaction.values()[bits.readUInt(2)];
 		if (bits.read())
 			character.specialization = CharacterSpecialization.values()[bits.readUInt(6)];

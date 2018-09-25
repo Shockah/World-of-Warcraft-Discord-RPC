@@ -15,6 +15,9 @@ public class Character {
 	public String realm;
 
 	@Nullable
+	public Region region;
+
+	@Nullable
 	public CharacterFaction faction;
 
 	@Nullable
